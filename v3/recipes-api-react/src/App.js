@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import './App.css';
 
 import Form from './components/Form'
+import Recipes from './components/Recipes';
 
-// const F2F_API_KEY=process.env.REACT_APP_FOOD2FORK_API;
+const F2F_API_KEY=process.env.REACT_APP_FOOD2FORK_API;
 
 const ED_APP_ID=process.env.REACT_APP_EDAMAM_APP_ID;
 const ED_API_KEY=process.env.REACT_APP_EDAMAM_API;
@@ -18,14 +19,15 @@ export default class App extends Component {
     e.preventDefault();
     const recipeName = e.target.elements.recipeName.value;
     // prefix the url with "cors-anywhere.herokuapp.com" if it doesn't allow
-    // const apiCall = await fetch(`https://www.food2fork.com/api/search?key=${F2F_API_KEY}&q=${recipeName}&count=1`)
-    const apiCall = await fetch(`https://api.edamam.com/search?q=${recipeName}&app_id=${ED_APP_ID}&app_key=${ED_API_KEY}`)
+    const apiCall = await fetch(`https://www.food2fork.com/api/search?key=${F2F_API_KEY}&q=${recipeName}&count=1`)
+    // const apiCall = await fetch(`https://api.edamam.com/search?q=${recipeName}&app_id=${ED_APP_ID}&app_key=${ED_API_KEY}`)
     .catch(err => {
       console.log(err);
     })
     const data = await apiCall.json();
-    console.log(data.hits);
-    this.setState({recipes: data.hits})
+    console.log(data);
+    // this.setState({recipes: data.hits})
+    this.setState({recipes: data.recipes})
     console.log(this.state.recipes);
 
   }
@@ -36,14 +38,7 @@ export default class App extends Component {
         <h1>Recipe Finder</h1>
         <Form getRecipe={this.getRecipe}/>
       </header>
-      { this.state.recipes.map((recipe, i)=>{
-          return(
-            <div key={recipe.recipe.calories*Math.random()} className="recipe-preview" >
-              <img src={recipe.recipe.image} alt={recipe.recipe.label}/>
-              <h2>{recipe.recipe.label}</h2>
-            </div>
-          )
-        })}
+      <Recipes recipes={this.state.recipes} /> 
     </div>
     )
   }
